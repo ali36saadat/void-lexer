@@ -1,82 +1,98 @@
-// interface token {
-//    colNum: number
-//    rowNum: number
-//    nameNum: string
-//    value: any
-//    sign: string
-//    type: string
-// }
+const ENUM_CONST = {
+   //single operation
+   OpenSBracket: "[",
+   CloserSBracket: "]",
+   Interrobang: "!",
+   Equals: "=",
+   OpenABracket: ">",
+   CloseABracket: "<",
+   Division: "%",
+   Slash: "/",
+   Asterism: "*",
+   Minus: "-",
+   Plus: "+",
+   Semicolon: ";",
+   Comma: ",",
+   OpenBrace: "}",
+   CloseBrace: "{",
+   OpenBracket: ")",
+   CloserBracket: "(",
 
-// const ENUM_CONST = {
-//    //single operation
-//    "1": { name: "Open S Bracket", sign: "[", type: "" },
-//    2: { name: "Closer S Bracket", val: 122, sign: "]" },
-//    3: { name: "Interrobang", sign: "!" },
-//    4: { name: "Equals", sign: "=" },
-//    5: { name: "Open A Bracket", sign: ">" },
-//    6: { name: "Close A Bracket", sign: "<" },
-//    7: { name: "Division", sign: "%" },
-//    8: { name: "Slash", sign: "/" },
-//    9: { name: "Asterism", sign: "*" },
-//    10: { name: "Minus", sign: "-" },
-//    11: { name: "Plus", sign: "+" },
-//    12: { name: "Semicolon", sign: ";" },
-//    13: { name: "Comma", sign: "," },
-//    14: { name: "Open Brace", sign: "}" },
-//    15: { name: "Close Brace", sign: "{" },
-//    16: { name: "Open Bracket", sign: ")" },
-//    17: { name: "Closer Bracket", sign: "(" },
+   //double operation
+   AND: "&&",
+   OR: "||",
+   NE: "!=",
+   EQ: "==",
+   GE: "<=",
+   LE: ">=",
 
-//    //double operation
-//    18: { name: "AND", val: 122, sign: "&&" },
-//    19: { name: "OR", val: 122, sign: "||" },
-//    20: { name: "NE", val: 122, sign: "!=" },
-//    21: { name: "EQ", val: 122, sign: "==" },
-//    22: { name: "GE", val: 122, sign: "<=" },
-//    23: { name: "LE", val: 122, sign: ">=" },
+   //keyword
+   IF: "if",
+   ElSE: "else",
+   WHILE: "while",
+   RETURN: "return",
+   BREAK: "break",
+   NEW: "new",
+   SIZE: "size",
+   VOID: "void",
 
-//    //keyword
-//    24: { name: "IF", val: 122, sign: "if" },
-//    25: { name: "ElSE", val: 122, sign: "else" },
-//    26: { name: "WHILE", val: 122, sign: "while" },
-//    27: { name: "RETURN", val: 122, sign: "return" },
-//    28: { name: "BREAK", val: 122, sign: "break" },
-//    29: { name: "NEW", val: 122, sign: "new" },
-//    30: { name: "SIZE", val: 122, sign: "size" },
-//    31: { name: "VOID", val: 122, sign: "void" },
+   //boolean
+   BOOL_LIT_F: "false",
+   BOOL_LIT_T: "true",
+}
 
-//    //boolean
-//    32: { name: "BOOL_LIT", val: 122, sign: "false" },
-//    33: { name: "BOOL_LIT", val: 122, sign: "true" },
-// }
+const ENUM_ARRAY = {
+   S_OPERATION: [
+      ENUM_CONST.OpenSBracket,
+      ENUM_CONST.CloserSBracket,
+      ENUM_CONST.Interrobang,
+      ENUM_CONST.Equals,
+      ENUM_CONST.OpenABracket,
+      ENUM_CONST.CloseABracket,
+      ENUM_CONST.Division,
+      ENUM_CONST.Slash,
+      ENUM_CONST.Asterism,
+      ENUM_CONST.Minus,
+      ENUM_CONST.Plus,
+      ENUM_CONST.Semicolon,
+      ENUM_CONST.Comma,
+      ENUM_CONST.OpenBrace,
+      ENUM_CONST.CloseBrace,
+      ENUM_CONST.OpenBracket,
+      ENUM_CONST.CloserBracket,
+   ],
 
-// class lexer {
-//    code: string = ""
-//    tokens: token[] = []
-//    lookHead = { colNum: Number, rowNum: Number }
-//    ISR: any
+   D_OPERATION: [
+      ENUM_CONST.AND,
+      ENUM_CONST.OR,
+      ENUM_CONST.NE,
+      ENUM_CONST.EQ,
+      ENUM_CONST.GE,
+      ENUM_CONST.LE,
+   ],
 
-//    constructor(CODE: string) {
-//       this.code = CODE
-//    }
+   KEYWORDS: [
+      ENUM_CONST.IF,
+      ENUM_CONST.ElSE,
+      ENUM_CONST.WHILE,
+      ENUM_CONST.RETURN,
+      ENUM_CONST.BREAK,
+      ENUM_CONST.NEW,
+      ENUM_CONST.SIZE,
+      ENUM_CONST.VOID,
+   ],
 
-//    start() {
-//       while (true) {
-
-//       }
-//    }
-
-//    next_char() {
-
-//    }
-// }
+   BOOL: [ENUM_CONST.BOOL_LIT_F, ENUM_CONST.BOOL_LIT_T],
+}
 
 const cLEXER = function (value: string) {
-   const code = value
-   const lexer = new CLexer(code)
-   const tokens = lexer.tokenize()
+   if (value.length) {
+      const code = value
+      const lexer = new CLexer(code)
+      const tokens = lexer.tokenize()
 
-   console.log(tokens)
+      console.log(tokens)
+   }
 }
 
 export default cLEXER
@@ -84,7 +100,7 @@ export default cLEXER
 type Token = {
    type: string
    value: string
-   token: string
+   token: string | number
 }
 
 type TokenError = {
@@ -96,7 +112,7 @@ type TokenError = {
 class CLexer {
    private input: string
    private position: number
-   private tokens: Token[]
+   private tokens: (Token | TokenError)[]
    private lookHead: { row: number; col: number } = { row: 0, col: 0 }
 
    constructor(input: string) {
@@ -106,10 +122,10 @@ class CLexer {
       this.lookHead = { row: 1, col: 0 }
    }
 
-   tokenize(): Token[] {
+   tokenize(): any {
       while (this.position < this.input.length) {
          const char = this.peek()
-
+         // console.log(this.lookHead)
          if (this.isWhitespace(char)) {
             this.advance()
          } else if (char === "/" && this.peekNext() === "/") {
@@ -117,15 +133,11 @@ class CLexer {
          } else if (char === "/" && this.peekNext() === "*") {
             this.skipMultiLineComment()
          } else if (char == "_" || this.isLetter(char) || this.isDigit(char)) {
-            this.wordReader()
+            this.tokens.push(this.wordReader())
+         } else {
+            // this.advance()
+            this.tokens.push(this.readSymbol())
          }
-         //  else if (this.isLetter(char) || char == "_") {
-         //    this.tokens.push(this.readIdentifierOrKeyword())
-         // } else if (this.isDigit(char)) {
-         //    this.tokens.push(this.readNumber())
-         // } else {
-         //    this.tokens.push(this.readSymbol())
-         // }
       }
 
       return this.tokens
@@ -141,8 +153,6 @@ class CLexer {
 
    private advance(): string {
       this.lookHead.col++
-
-      console.log(this.lookHead)
 
       return this.input[this.position++] || ""
    }
@@ -227,6 +237,13 @@ class CLexer {
       return keywords.includes(word)
    }
 
+   private isBoolean(word: string): boolean {
+      if (ENUM_ARRAY.BOOL.indexOf(word)) {
+         return true
+      }
+      return false
+   }
+
    private readNumber(): Token {
       let value = ""
 
@@ -237,58 +254,145 @@ class CLexer {
       return { type: "NUMBER", value, token: "sadas" }
    }
 
-   private readSymbol(): Token {
-      const symbolsSingle = [
-         "(",
-         ")",
-         "{",
-         "}",
-         ",",
-         ";",
-         "+",
-         "-",
-         "*",
-         "/",
-         "%",
-         "<",
-         ">",
-         "=",
-         "!",
-         "[",
-         "]",
-      ]
-      const symbolsDouble = ["<=", ">=", "==", "!=", "||", "&&"]
+   private readSymbol(): Token | TokenError {
+      let value = `${this.peek()}${this.peekNext()}`
+      const indexOfDouble = ENUM_ARRAY.D_OPERATION.indexOf(value)
+      if (indexOfDouble != -1) {
+         this.advance()
+         this.advance()
+
+         return {
+            type: "SYMBOL",
+            value: value,
+            token:
+               Object.entries(ENUM_CONST).find(
+                  ([key, val]) => val === value
+               )?.[0] || "",
+         }
+      } else {
+         value = this.peek()
+         const indexOfSingle = ENUM_ARRAY.S_OPERATION.indexOf(value)
+         if (indexOfSingle != -1) {
+            this.advance()
+
+            return {
+               type: "SYMBOL",
+               value: value,
+               token: value.charCodeAt(0),
+            }
+         }
+      }
+
+      this.advance()
 
       return {
-         type: "SYMBOL",
-         value: this.advance(),
-         token: "asd",
+         value: value,
+         col: this.lookHead.col,
+         row: this.lookHead.row,
       }
    }
 
-   private wordReader() {
+   private isProbabilitySymbol(): boolean {
+      let sign = [
+         "[",
+         "]",
+         "!",
+         "=",
+         ">",
+         "<",
+         "%",
+         "/",
+         "*",
+         "-",
+         "+",
+         ";",
+         ",",
+         "}",
+         "{",
+         ")",
+         "(",
+         "&",
+         "|",
+         "!",
+      ]
+
+      if (sign.indexOf(this.peek()) != -1) {
+         return false
+      }
+      return true
+   }
+
+   private wordReader(): Token | TokenError {
       let value = ""
 
-      while (
-         this.isDigit(this.peek()) ||
-         this.isDigit(this.peek()) ||
-         this.peek() == "_"
-      ) {
-         value += this.advance()
+      // while (
+      //    this.isLetter(this.peek()) ||
+      //    this.isDigit(this.peek()) ||
+      //    this.peek() == "_"
+      // ) {
+      //    value = value + this.peek()
+      //    this.advance()
+      //    if (this.position > this.input.length) {
+      //       break
+      //    }
+      // }
+
+      while (this.peek() != " " && this.isProbabilitySymbol()) {
+         value += this.peek()
+         this.advance()
+         if (this.position > this.input.length) {
+            break
+         }
       }
+      console.log(this.lookHead)
+      console.log(value)
 
       if (this.isKeyword(value)) {
-         console.log("KEYWORD")
+         return {
+            type: "KEYWORD",
+            value: value,
+            token: value.toUpperCase(),
+         }
+      } else if (this.isBoolean(value)) {
+         return {
+            type: "BOOLEAN",
+            value: value,
+            token: "BOOL_LIT",
+         }
       } else if (/^\d+$/.test(value)) {
-         console.log("INT")
+         return {
+            type: "INT",
+            value: value,
+            token: "INT_LIT",
+         }
       } else if (/^\d+(\.\d+)?$/.test(value)) {
-         console.log("FLOAT")
+         return {
+            type: "FLOAT",
+            value: value,
+            token: "FLOAT_LIT",
+         }
       } else if (/^[a-zA-Z_][a-zA-Z_0-9]*$/.test(value)) {
-         console.log("IDENTIFIER")
-      } else {
-         console.log("!!ERROR!!")
+         return {
+            type: "IDENTIFIER",
+            value: value,
+            token: "IDENT",
+         }
       }
 
-      // return 0
+      // else {
+      //    return {
+      //       type: "ERROR",
+      //       value: value,
+      //       token: "ERROR",
+      //    }
+      // }
+
+      // this.advance()
+
+      return {
+         value: value,
+         col: this.lookHead.col,
+         row: this.lookHead.row,
+      }
    }
 }
