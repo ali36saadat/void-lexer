@@ -91,7 +91,8 @@ const cLEXER = function (value: string) {
       const lexer = new CLexer(code)
       const tokens = lexer.tokenize()
 
-      console.log(tokens)
+      return tokens
+      // console.log(tokens)
    }
 }
 
@@ -124,13 +125,12 @@ class CLexer {
 
    tokenize(): any {
       while (this.position < this.input.length) {
-         const char = this.peek()
-         // console.log(this.lookHead)
+         const char = this.currentChar()
          if (this.isWhitespace(char)) {
             this.advance()
-         } else if (char === "/" && this.peekNext() === "/") {
+         } else if (char === "/" && this.currentCharNext() === "/") {
             this.skipSingleLineComment()
-         } else if (char === "/" && this.peekNext() === "*") {
+         } else if (char === "/" && this.currentCharNext() === "*") {
             this.skipMultiLineComment()
          } else if (char == "_" || this.isLetter(char) || this.isDigit(char)) {
             this.tokens.push(this.wordReader())
@@ -143,11 +143,11 @@ class CLexer {
       return this.tokens
    }
 
-   private peek(): string {
+   private currentChar(): string {
       return this.input[this.position] || ""
    }
 
-   private peekNext(): string {
+   private currentCharNext(): string {
       return this.input[this.position + 1] || ""
    }
 
@@ -179,7 +179,7 @@ class CLexer {
    }
 
    private skipSingleLineComment(): void {
-      while (this.peek() !== "\n" && this.peek() !== "") {
+      while (this.currentChar() !== "\n" && this.currentChar() !== "") {
          this.advance()
       }
    }
@@ -189,13 +189,13 @@ class CLexer {
       this.advance() // Skip '*'
 
       while (
-         !(this.peek() === "*" && this.peekNext() === "/") &&
-         this.peek() !== ""
+         !(this.currentChar() === "*" && this.currentCharNext() === "/") &&
+         this.currentChar() !== ""
       ) {
          this.advance()
       }
 
-      if (this.peek() === "*" && this.peekNext() === "/") {
+      if (this.currentChar() === "*" && this.currentCharNext() === "/") {
          this.advance() // Skip '*'
          this.advance() // Skip '/'
       }
@@ -205,9 +205,9 @@ class CLexer {
       let value = ""
 
       while (
-         this.isLetter(this.peek()) ||
-         this.isDigit(this.peek()) ||
-         this.peek() == "_"
+         this.isLetter(this.currentChar()) ||
+         this.isDigit(this.currentChar()) ||
+         this.currentChar() == "_"
       ) {
          value += this.advance()
       }
@@ -238,7 +238,7 @@ class CLexer {
    }
 
    private isBoolean(word: string): boolean {
-      if (ENUM_ARRAY.BOOL.indexOf(word)) {
+      if (ENUM_ARRAY.BOOL.indexOf(word) != -1) {
          return true
       }
       return false
@@ -247,7 +247,7 @@ class CLexer {
    private readNumber(): Token {
       let value = ""
 
-      while (this.isDigit(this.peek())) {
+      while (this.isDigit(this.currentChar())) {
          value += this.advance()
       }
 
@@ -255,7 +255,7 @@ class CLexer {
    }
 
    private readSymbol(): Token | TokenError {
-      let value = `${this.peek()}${this.peekNext()}`
+      let value = `${this.currentChar()}${this.currentCharNext()}`
       const indexOfDouble = ENUM_ARRAY.D_OPERATION.indexOf(value)
       if (indexOfDouble != -1) {
          this.advance()
@@ -270,7 +270,7 @@ class CLexer {
                )?.[0] || "",
          }
       } else {
-         value = this.peek()
+         value = this.currentChar()
          const indexOfSingle = ENUM_ARRAY.S_OPERATION.indexOf(value)
          if (indexOfSingle != -1) {
             this.advance()
@@ -316,7 +316,7 @@ class CLexer {
          "!",
       ]
 
-      if (sign.indexOf(this.peek()) != -1) {
+      if (sign.indexOf(this.currentChar()) != -1) {
          return false
       }
       return true
@@ -326,26 +326,24 @@ class CLexer {
       let value = ""
 
       // while (
-      //    this.isLetter(this.peek()) ||
-      //    this.isDigit(this.peek()) ||
-      //    this.peek() == "_"
+      //    this.isLetter(this.currentChar()) ||
+      //    this.isDigit(this.currentChar()) ||
+      //    this.currentChar() == "_"
       // ) {
-      //    value = value + this.peek()
+      //    value = value + this.currentChar()
       //    this.advance()
       //    if (this.position > this.input.length) {
       //       break
       //    }
       // }
 
-      while (this.peek() != " " && this.isProbabilitySymbol()) {
-         value += this.peek()
+      while (this.currentChar() != " " && this.isProbabilitySymbol()) {
+         value += this.currentChar()
          this.advance()
          if (this.position > this.input.length) {
             break
          }
       }
-      console.log(this.lookHead)
-      console.log(value)
 
       if (this.isKeyword(value)) {
          return {
@@ -378,16 +376,6 @@ class CLexer {
             token: "IDENT",
          }
       }
-
-      // else {
-      //    return {
-      //       type: "ERROR",
-      //       value: value,
-      //       token: "ERROR",
-      //    }
-      // }
-
-      // this.advance()
 
       return {
          value: value,
