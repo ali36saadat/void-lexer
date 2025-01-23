@@ -20,8 +20,13 @@ function createToken(type: string, value: string, token: string | number) {
    return { type, value, token }
 }
 
-function createErrorToken(col: number, row: number, value: string | number) {
-   return { col, row, value }
+function createErrorToken(
+   col: number,
+   row: number,
+   value: string | number,
+   suggest: string
+) {
+   return { col, row, value, suggest }
 }
 
 function App(this: any) {
@@ -30,7 +35,7 @@ function App(this: any) {
       { type: string; value: string; token: string | number }[]
    >([])
    const [ErrorToken, setErrorToken] = useState<
-      { col: number; row: number; value: string | number }[]
+      { col: number; row: number; value: string | number; suggest: string }[]
    >([])
 
    const changeCodeFunc = function (value: any) {
@@ -47,7 +52,7 @@ function App(this: any) {
       const ErrorTokens = AllTokens.filter((obj: any) =>
          obj.hasOwnProperty("col")
       ).map((i: any) => {
-         return createErrorToken(i.col, i.row, i.value)
+         return createErrorToken(i.col, i.row, i.value, i.suggest)
       })
       console.log(ErrorTokens)
       setErrorToken(ErrorTokens)
@@ -190,7 +195,7 @@ function App(this: any) {
                                     {row.value}
                                  </TableCell>{" "}
                                  <TableCell align="center" height={10}>
-                                    {row.value}
+                                    {row.suggest}
                                  </TableCell>
                               </TableRow>
                            )
