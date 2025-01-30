@@ -79,7 +79,7 @@ function App(this: any) {
                      height="100%"
                      width="100%"
                      defaultLanguage="c"
-                     defaultValue='printf("Hello, PyramidLexer")'
+                     defaultValue='printf("Hello, VOID LEXER")'
                      theme="vs-dark"
                      options={editorOptions}
                      value={value}
